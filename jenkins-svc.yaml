@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+        #  namespace: general
+  name: jenkins
+spec:
+  selector:
+    app: jenkins
+  ports:
+    - name: http-port
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: jnlp-port
+      protocol: TCP
+      port: 50000
+      targetPort: 50000
+      #  selector:
+      #    name: jenkins
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-nodeport
+  #  namespace: general
+spec:
+  selector:
+    app: jenkins
+  ports:
+  - name: jnlp
+    nodePort: 30000
+    port: 50000
+    protocol: TCP
+    targetPort: 50000
+    #  selector:
+    #    name: jenkins
+  type: NodePort
+
