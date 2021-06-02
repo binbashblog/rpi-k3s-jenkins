@@ -24,6 +24,7 @@ curl -sfL https://get.k3s.io | sh -
 ```
 
 * Install the nfs client on all your nodes
+
 Deb-based OS
 ```bash
 apt-get install nfs-common
