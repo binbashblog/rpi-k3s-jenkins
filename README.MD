@@ -1,6 +1,17 @@
 # How to use
 
+NOTE: Also tested to work on K8s as well as K3s
+
 Pretty simple:
+
+* Requires a NFS Server
+Highly recommend using an NFS Server instead of relying on the SD Card's reliability
+
+Also requires installing the nfs client on all your nodes
+
+* jnlp (Applies to Windows agents using jnlp only, not agents that use websockets or ssh launch method from the master)
+I have set the service port to TCP 50000 and the nodeport to tcp 30000 you need to configure any nodes external to the k8s cluster to tunnel to port 30000 or whichever port you decide to use, this is a workaround as the ingress only works on 80/443 http/https so you have to use a nodeport, alternatively use a websocket or ssh on windows (requires ssh keypair). Create the node in Jenkins and enter the port 5000 under the Advanced option "Tunnel connection through". Port 30000 will then need to be forwarded from external node agents to the kubernetes external cluster ip which will then be forwarded to the container on port 50000...
+
 
 * Install k3s on a Raspberry Pi 4:
 ```bash

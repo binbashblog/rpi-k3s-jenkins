@@ -1,7 +1,11 @@
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  namespace: jenkins
   name: jenkins
+  labels:
+    app: jenkins
 spec:
   selector:
     matchLabels:
@@ -17,18 +21,23 @@ spec:
         app: jenkins
     spec:
       terminationGracePeriodSeconds: 10
+#      serviceAccountName: jenkins
       containers:
         - name: jenkins
-          #          image: jenkins/jenkins:lts
-          image: nazman/jenkins-armhf # for raspberry pi
+          image: jenkins4eval/jenkins:latest
           imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 8080
+            - name: jnlp-port
+              containerPort: 50000
           resources:
             limits:
               cpu: 1
               memory: 2Gi
             requests:
-              memory: 2Gi
               cpu: 0.5
+              memory: 2Gi
           env:
             - name: LIMITS_MEMORY
               valueFrom:
@@ -37,13 +46,8 @@ spec:
                   divisor: 1Mi
             - name: JAVA_OPTS
               value: -Xmx$(LIMITS_MEMORY)m -XshowSettings:vm -Dhudson.slaves.NodeProvisioner.initialDelay=0 -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85 -Dcom.sun.jndi.ldap.connect.timeout=100
-          ports:
-            - name: http-port
-              containerPort: 8080
-            - name: jnlp-port
-              containerPort: 50000
           volumeMounts:
-            - name: general
+            - name: jenkins
               mountPath: /var/jenkins_home
           livenessProbe:
             exec:
@@ -56,6 +60,6 @@ spec:
       securityContext:
         fsGroup: 1000
       volumes:
-        - name: general
-          persistentVolumeClaim:
-            claimName: local-path-pvc
+      - name: jenkins
+        persistentVolumeClaim:
+          claimName: jenkins-pvc

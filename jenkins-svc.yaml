@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-        #  namespace: general
+  namespace: jenkins
   name: jenkins
 spec:
   selector:
@@ -16,15 +16,12 @@ spec:
       protocol: TCP
       port: 50000
       targetPort: 50000
-      #  selector:
-      #    name: jenkins
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: jenkins-nodeport
-  #  namespace: general
+  namespace: jenkins
 spec:
   selector:
     app: jenkins
@@ -34,7 +31,5 @@ spec:
     port: 50000
     protocol: TCP
     targetPort: 50000
-    #  selector:
-    #    name: jenkins
   type: NodePort
 
